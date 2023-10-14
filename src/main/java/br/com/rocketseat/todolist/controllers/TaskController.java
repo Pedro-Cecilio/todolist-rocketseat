@@ -38,11 +38,10 @@ public class TaskController {
 
     @PostMapping
     public ResponseEntity<Object> create(@RequestBody TaskRecordDto taskRecordDto, HttpServletRequest request) {
-        var userId = request.getAttribute("userId");
-        var user = iUserRepository.findById((UUID) userId);
+        UserModel user = (UserModel) request.getAttribute("user");
         var taskModel = new TaskModel();
         BeanUtils.copyProperties(taskRecordDto, taskModel);
-        taskModel.setUserModel(user.get());
+        taskModel.setUserModel(user);
         var currentDate = LocalDateTime.now();
         if (currentDate.isAfter(taskModel.getStartAt())) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
